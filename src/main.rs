@@ -16,7 +16,7 @@ impl<T> LinkedList<T> {
 		};
 	}
 
-	fn get(&self, index: &u32) -> Result<&T, String> {
+	pub fn get(&self, index: &u32) -> Result<&T, String> {
 		match self {
 			LinkedList::End => Err(format!("Index {} out of range of this list", index)),
 			LinkedList::Node(value, next) => {
@@ -29,7 +29,7 @@ impl<T> LinkedList<T> {
 		}
 	}
 
-	fn append(&mut self, second_list: LinkedList<T>) -> () {
+	pub fn append(&mut self, second_list: LinkedList<T>) -> () {
 		if let LinkedList::Node(_, next) = self {
 			match **next {
 				LinkedList::End => self.set_next(second_list),
