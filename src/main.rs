@@ -30,6 +30,18 @@ impl<T> LinkedList<T> {
 	}
 }
 
+impl<T> std::ops::Index<&u32> for LinkedList<T> {
+	type Output = T;
+
+	fn index(&self, index: &u32) -> &T {
+		let result = self.get(index);
+		match result {
+			Ok(value) => value,
+			Err(message) => panic!(message)
+		}
+	}
+}
+
 fn main() {
     let mut x = LinkedList::new(5);
 	let y = LinkedList::new(7);
@@ -38,5 +50,6 @@ fn main() {
 	let slot0 = x.get(&0);
 	let slot1 = x.get(&1);
 	let slot2 = x.get(&2);
-	println!("{:?}, {:?}, {:?}", slot0, slot1, slot2)
+	println!("{:?}, {:?}, {:?}", slot0, slot1, slot2);
+	println!("{:?}, {:?}", x[&0], x[&1]);
 }
