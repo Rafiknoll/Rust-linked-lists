@@ -28,6 +28,17 @@ impl<T> LinkedList<T> {
 			}
 		}
 	}
+
+	fn append(&mut self, second_list: LinkedList<T>) -> () {
+		if let LinkedList::Node(_, next) = self {
+			match **next {
+				LinkedList::End => self.set_next(second_list),
+				LinkedList::Node(_, _) => next.append(second_list)
+			};
+		} else {
+			panic!("Attempt to append a list to an end");
+		}
+	}
 }
 
 impl<T> std::ops::Index<&u32> for LinkedList<T> {
@@ -45,11 +56,13 @@ impl<T> std::ops::Index<&u32> for LinkedList<T> {
 fn main() {
     let mut x = LinkedList::new(5);
 	let y = LinkedList::new(7);
-	x.set_next(y);
+	let z = LinkedList::new(9);
+	x.append(y);
+	x.append(z);
 	println!("{:?}", x);
 	let slot0 = x.get(&0);
 	let slot1 = x.get(&1);
 	let slot2 = x.get(&2);
 	println!("{:?}, {:?}, {:?}", slot0, slot1, slot2);
-	println!("{:?}, {:?}", x[&0], x[&1]);
+	println!("{:?}, {:?}, {:?}", x[&0], x[&1], x[&2]);
 }
