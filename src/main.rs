@@ -15,6 +15,19 @@ impl<T> LinkedList<T> {
 			LinkedList::End => panic!("Attempt to concat to the end of a list!"),
 		};
 	}
+
+	fn get(&self, index: &u32) -> Result<&T, String> {
+		match self {
+			LinkedList::End => Err(format!("Index {} out of range of this list", index)),
+			LinkedList::Node(value, next) => {
+				if index > &0 {
+					next.get(&(index - 1))
+				} else {
+					Ok(value)
+				}
+			}
+		}
+	}
 }
 
 fn main() {
@@ -22,4 +35,8 @@ fn main() {
 	let y = LinkedList::new(7);
 	x.set_next(y);
 	println!("{:?}", x);
+	let slot0 = x.get(&0);
+	let slot1 = x.get(&1);
+	let slot2 = x.get(&2);
+	println!("{:?}, {:?}, {:?}", slot0, slot1, slot2)
 }
