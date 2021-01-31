@@ -36,7 +36,7 @@ impl<T> LinkedList<T> {
 				LinkedList::Node(_, _) => next.append(second_list)
 			};
 		} else {
-			panic!("Attempt to append a list to an end");
+			*self = second_list;
 		}
 	}
 
