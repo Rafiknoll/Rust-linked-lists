@@ -39,6 +39,28 @@ impl<T> LinkedList<T> {
 			panic!("Attempt to append a list to an end");
 		}
 	}
+
+	pub fn split(mut self, index: &u32) ->Result<(LinkedList<T>, LinkedList<T>), String> {
+		let mut current_node = &mut self;
+		let mut distance_to_index = *index;
+		while let LinkedList::Node(_, ref mut next) = current_node {
+			if distance_to_index == 0 {
+				return Err(String::from("Spliting at index 0 makes no sense"))
+			}
+			if distance_to_index == 1 {
+				let mut second_part = Box::new(LinkedList::End);
+				std::mem::swap(&mut second_part, &mut *next);
+				return Ok((self, *second_part))
+			}
+			distance_to_index -= 1;
+			current_node = &mut *next;
+		}
+		if let LinkedList::Node(_, next) = self {
+			next.split(&(index - 1))
+		} else {
+			Err(format!("Index {} out of range of this list", index))
+		}
+	}
 }
 
 impl<T> std::ops::Index<&u32> for LinkedList<T> {
@@ -60,9 +82,23 @@ fn main() {
 	x.append(y);
 	x.append(z);
 	println!("{:?}", x);
-	let slot0 = x.get(&0);
-	let slot1 = x.get(&1);
-	let slot2 = x.get(&2);
-	println!("{:?}, {:?}, {:?}", slot0, slot1, slot2);
-	println!("{:?}, {:?}, {:?}", x[&0], x[&1], x[&2]);
+	//x.insert(11, &0);
+	println!("{:?}", x);
+	match x.split(&2) {
+		Ok((part1, part2)) => {
+			println!("{:?}", part1);
+			println!("{:?}", part2);
+			let mut x = part1;
+			x.append(part2);
+			let slot0 = x.get(&0);
+			let slot1 = x.get(&1);
+			let slot2 = x.get(&2);
+			println!("{:?}, {:?}, {:?}", slot0, slot1, slot2);
+			println!("{:?}, {:?}, {:?}", x[&0], x[&1], x[&2]);
+		},
+		Err(msg) => println!("{}", msg),
+	}
+
+	//println!("{:?}, {:?}, {:?}", slot0, slot1, slot2);
+	//println!("{:?}, {:?}, {:?}", x[&0], x[&1], x[&2]);
 }
