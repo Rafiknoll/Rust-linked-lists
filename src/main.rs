@@ -40,7 +40,7 @@ impl<T> LinkedList<T> {
 		}
 	}
 
-	pub fn split(mut self, index: &u32) ->Result<(LinkedList<T>, LinkedList<T>), String> {
+	pub fn split(mut self, index: &u32) -> Result<(LinkedList<T>, LinkedList<T>), String> {
 		let mut current_node = &mut self;
 		let mut distance_to_index = *index;
 		while let LinkedList::Node(_, ref mut next) = current_node {
@@ -55,7 +55,22 @@ impl<T> LinkedList<T> {
 			distance_to_index -= 1;
 			current_node = &mut *next;
 		}
+		// If we got here it means we reached an End before the index was 1 or 0
 		Err(format!("Index {} out of range of this list", index))
+	}
+
+	pub fn insert(&mut self, value: T, index: &u32) -> () {
+		if let LinkedList::Node(_, ref mut next) = self {
+			if index == &0 {
+				let mut inserted_node = LinkedList::new(value);
+				std::mem::swap(self, &mut inserted_node);
+				self.set_next(inserted_node);
+			} else {
+				next.insert(value, &(index - 1));
+			};
+		} else {
+			panic!("Attempt to insert an item into an end");
+		}
 	}
 }
 
@@ -78,9 +93,11 @@ fn main() {
 	x.append(y);
 	x.append(z);
 	println!("{:?}", x);
-	//x.insert(11, &0);
+	x.insert(11, &0);
 	println!("{:?}", x);
-	match x.split(&0) {
+	x.insert(12, &2);
+	println!("{:?}", x);
+	match x.split(&2) {
 		Ok((part1, part2)) => {
 			println!("{:?}", part1);
 			println!("{:?}", part2);
