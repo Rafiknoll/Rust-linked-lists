@@ -45,7 +45,7 @@ impl<T> LinkedList<T> {
 		let mut distance_to_index = *index;
 		while let LinkedList::Node(_, ref mut next) = current_node {
 			if distance_to_index == 0 {
-				return Err(String::from("Spliting at index 0 makes no sense"))
+				return Ok((LinkedList::End, self))
 			}
 			if distance_to_index == 1 {
 				let mut second_part = Box::new(LinkedList::End);
@@ -55,11 +55,7 @@ impl<T> LinkedList<T> {
 			distance_to_index -= 1;
 			current_node = &mut *next;
 		}
-		if let LinkedList::Node(_, next) = self {
-			next.split(&(index - 1))
-		} else {
-			Err(format!("Index {} out of range of this list", index))
-		}
+		Err(format!("Index {} out of range of this list", index))
 	}
 }
 
@@ -84,7 +80,7 @@ fn main() {
 	println!("{:?}", x);
 	//x.insert(11, &0);
 	println!("{:?}", x);
-	match x.split(&2) {
+	match x.split(&0) {
 		Ok((part1, part2)) => {
 			println!("{:?}", part1);
 			println!("{:?}", part2);
