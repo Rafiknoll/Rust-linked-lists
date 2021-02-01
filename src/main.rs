@@ -69,7 +69,25 @@ impl<T> LinkedList<T> {
 				next.insert(value, &(index - 1));
 			};
 		} else {
-			panic!("Attempt to insert an item into an end");
+			panic!("Attempt to insert an item beyond the list's index range");
+		}
+	}
+
+	pub fn remove(&mut self, index: &u32) -> () {
+		if let LinkedList::Node(self_value, self_next) = self {
+			if index == &0 {
+				match **self_next {
+					LinkedList::End => *self = LinkedList::End,
+					LinkedList::Node(ref mut value, _) => {
+						std::mem::swap(self_value, value);
+						self.remove(&1);
+					}
+				}
+			} else {
+				self_next.remove(&(index - 1));
+			}
+		} else {
+			panic!("Attempt to remove an item beyond the list's index range");
 		}
 	}
 }
@@ -103,6 +121,11 @@ fn main() {
 			println!("{:?}", part2);
 			let mut x = part1;
 			x.append(part2);
+			println!("{:?}", x);
+			x.remove(&1);
+			println!("After removal: {:?}", x);
+			x.remove(&0);
+			println!("After removal: {:?}", x);
 			let slot0 = x.get(&0);
 			let slot1 = x.get(&1);
 			let slot2 = x.get(&2);
