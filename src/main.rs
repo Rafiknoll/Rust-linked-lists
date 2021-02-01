@@ -104,24 +104,42 @@ impl<T> std::ops::Index<&u32> for LinkedList<T> {
 	}
 }
 
+impl<T: std::cmp::Ord> LinkedList<T> {
+
+	pub fn sort(&mut self) -> () {
+		if let LinkedList::Node(ref mut self_value, self_next) = self {
+			let mut current_node = &mut **self_next;
+			while let LinkedList::Node(ref mut next_value, next_next) = current_node {
+				if self_value > next_value {
+					std::mem::swap(self_value, next_value);
+				}
+				current_node = &mut **next_next;
+			}
+			self_next.sort();
+		}
+	}
+}
+
 fn main() {
     let mut x = LinkedList::new(5);
 	let y = LinkedList::new(7);
 	let z = LinkedList::new(9);
 	x.append(y);
 	x.append(z);
-	println!("{:?}", x);
+	println!("Appends: {:?}", x);
 	x.insert(11, &0);
-	println!("{:?}", x);
+	println!("After insert: {:?}", x);
 	x.insert(12, &2);
-	println!("{:?}", x);
+	println!("Another insert: {:?}", x);
 	match x.split(&2) {
 		Ok((part1, part2)) => {
-			println!("{:?}", part1);
-			println!("{:?}", part2);
+			println!("part1: {:?}", part1);
+			println!("part2: {:?}", part2);
 			let mut x = part1;
 			x.append(part2);
-			println!("{:?}", x);
+			println!("append: {:?}", x);
+			x.sort();
+			println!("After sort: {:?}", x);
 			x.remove(&1);
 			println!("After removal: {:?}", x);
 			x.remove(&0);
